@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cronograma de Tiempo de Descanso</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; background: #f0f4f8; padding: 20px; }
+  .container { background: white; max-width: 1100px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+
+  /* HEADER */
+  .title { text-align: center; color: #1a3a6b; font-size: 26px; font-weight: 900; letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; }
+
+  .info-bar { display: flex; align-items: stretch; border: 2px solid #2d6aa0; border-radius: 8px; margin-bottom: 15px; overflow: hidden; }
+  .info-block { padding: 10px 16px; display: flex; align-items: center; gap: 10px; }
+  .info-block:not(:last-child) { border-right: 2px solid #2d6aa0; }
+  .info-block .icon { font-size: 22px; color: #1a3a6b; }
+  .info-block .label { font-weight: 700; color: #1a3a6b; font-size: 12px; text-transform: uppercase; }
+  .info-block .value { font-size: 13px; color: #333; }
+  .info-block .value div { line-height: 1.6; }
+  .info-block:last-child { flex: 1; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead tr.group-header th { background: #1a3a6b; color: white; text-align: center; font-weight: 700; padding: 7px 5px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  thead tr.sub-header th { background: #2d6aa0; color: white; text-align: center; font-weight: 700; padding: 6px 4px; font-size: 11px; text-transform: uppercase; }
+
+  tbody tr:nth-child(even) { background: #f0f6ff; }
+  tbody tr:nth-child(odd) { background: #ffffff; }
+  tbody tr:hover { background: #ddeeff; }
+  td { padding: 6px 8px; text-align: center; border: 1px solid #ccd9ea; }
+  td.left { text-align: left; }
+  td.num { font-weight: 700; color: #1a3a6b; }
+
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+  .q1 { background: #d6eaf8; color: #1a5276; border: 1px solid #7fb3d3; }
+  .q2 { background: #d5f5e3; color: #1a5632; border: 1px solid #7dcea0; }
+  .q3 { background: #fdebd0; color: #784212; border: 1px solid #f0a500; }
+  .q-none { background: #f0f0f0; color: #555; border: 1px solid #bbb; }
+
+  /* CARGO COLORS */
+  .cargo-sup { color: #1a3a6b; font-weight: 700; }
+  .cargo-tec { color: #c0392b; font-weight: 700; }
+  .cargo-mon { color: #c0392b; font-weight: 700; }
+  .cargo-other { color: #555; font-weight: 600; }
+
+  .time-cell { color: #333; font-size: 11px; }
+
+  /* SUMMARY */
+  .summary { margin-top: 14px; display: flex; align-items: center; gap: 10px; padding: 10px 16px; border: 2px solid #2d6aa0; border-radius: 8px; flex-wrap: wrap; }
+  .summary .sum-label { font-weight: 700; color: #1a3a6b; font-size: 12px; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+  .sum-badge { padding: 4px 14px; border-radius: 5px; font-weight: 700; font-size: 12px; border: 2px solid; }
+  .sum-q1 { background: #d6eaf8; color: #1a5276; border-color: #7fb3d3; }
+  .sum-q2 { background: #d5f5e3; color: #1a5632; border-color: #7dcea0; }
+  .sum-q3 { background: #fdebd0; color: #784212; border-color: #f0a500; }
+  .sum-none { background: #f0f0f0; color: #555; border-color: #bbb; }
+  .sum-total { background: #1a3a6b; color: white; border-color: #1a3a6b; margin-left: auto; }
+
+  .legend { margin-top: 10px; display: flex; align-items: center; gap: 12px; padding: 8px 16px; border: 1px solid #ccd9ea; border-radius: 6px; flex-wrap: wrap; font-size: 12px; }
+  .legend .leg-label { font-weight: 700; color: #1a3a6b; }
+  .leg-item { display: flex; align-items: center; gap: 5px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="title">&#128197; Cronograma de Tiempo de Descanso</div>
+
+  <div class="info-bar">
+    <div class="info-block">
+      <span class="icon">&#128197;</span>
+      <div>
+        <div class="label">Fecha:</div>
+        <div class="value">27 de mayo de 2024</div>
+      </div>
+    </div>
+    <div class="info-block" style="flex:1.4">
+      <span class="icon">&#9200;</span>
+      <div>
+        <div class="label">Horarios de Descanso:</div>
+        <div class="value">
+          <div><strong>1er descanso:</strong> 9:00 a.m. – 9:20 a.m. / 9:20 a.m. – 9:40 a.m. (20 min)</div>
+          <div><strong>2° descanso:</strong> 3:00 p.m. – 3:20 p.m. / 3:20 p.m. – 3:40 p.m. (20 min)</div>
+        </div>
+      </div>
+    </div>
+    <div class="info-block" style="flex:1">
+      <span class="icon">&#128101;</span>
+      <div>
+        <div class="label">Nota:</div>
+        <div class="value">Los horarios pueden variar según turno asignado.</div>
+      </div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr class="group-header">
+        <th rowspan="2" style="width:36px">N°</th>
+        <th rowspan="2" style="width:175px">Cargo</th>
+        <th rowspan="2">Nombre</th>
+        <th rowspan="2" style="width:60px">Equipo</th>
+        <th colspan="2">1er Descanso</th>
+        <th colspan="2">2° Descanso</th>
+        <th rowspan="2" style="width:80px">Duración por Descanso</th>
+      </tr>
+      <tr class="sub-header">
+        <th>Inicio</th><th>Fin</th>
+        <th>Inicio</th><th>Fin</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <div class="summary" id="summary"></div>
+  <div class="legend">
+    <span class="leg-label">Referencia de Equipos:</span>
+    <span class="leg-item"><span class="badge q1">Q1</span> Equipo 1</span>
+    <span class="leg-item"><span class="badge q2">Q2</span> Equipo 2</span>
+    <span class="leg-item"><span class="badge q3">Q3</span> Equipo 3</span>
+    <span class="leg-item"><span class="badge q-none">–</span> Sin equipo asignado</span>
+  </div>
+</div>
+
+<script>
+const data = [
+  ["Supervisor de zona","Andrea Maria Arevalo Mejia","Q1","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Supervisor de zona","Edgardo Enrique Ramirez Mercado","Q2","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Supervisor de zona","Marta Elena De La Cruz Flores","Q2","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Supervisor de zona","Angela Xiomara Rodriguez","Q3","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Supervisor de zona","Esau Amaya","Q3","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Supervisor de zona","Hector manuel Garcia Melgar","Q1","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Expertos en conectividad","Sandor Alfredo Hernández Vásquez","Q2","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Expertos en conectividad","Jimy Ivan Carbajal Gochez","Q3","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Expertos en conectividad","Jose Antonio Cruz Ruano","Q3","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Expertos en conectividad","Jason Gustavo Figueroa Lopez","Q2","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Expertos en conectividad","Jefferson Javier Avelar Arriaza","Q1","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Expertos en conectividad","Jose Benigno Hernadez Renderos","Q1","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Tec Master (Tec N2)","Rodrigo Oswaldo Rivas López","Q3","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Tec Master (Tec N2)","Carlos Javier Vargas Jordán","Q3","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Tec Master (Tec N2) - OCCIDENTAL","Luis melendez","Q1","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Monitor N2","Boris Josue Garcia Santos","Q3","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Monitor N2","José Luis Castellón Morales","Q3","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Monitor N2","Jonatan Josué Orellana Aparicio","Q3","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Tec N1","Luis Arturo Cerón Torres","Q2","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Tec N1","Flor de María Cosme Lemus","Q3","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Tec N1","Oscar Adalberto Sánchez Hernández","Q2","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Tec N1","Mariela Lissette Rivas Calderón","Q2","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Tec N1","Kevin Daniel Cruz Díaz","Q3","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Tec N1","Manuel Antonio Bolaños Marcía","Q3","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Monitor N1","Estefany Alejandra Franco Martinez","Q1","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Monitor N1","Luis Armando Yanes Martínez","Q3","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Monitor N1","Linda Nahomy Avilés Quiñonez","Q3","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Monitor N1","Michael Jose Castro De Paz","Q2","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Monitor N1","Jimmy Francisco Carranza Quintanilla","Q1","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Monitor N1","Barbara Marisol Magaña Hernandez","Q1","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Monitor N1","William Amadeo Molina Garcia","Q1","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Monitor N1","Ericka Lisseth Chacon Rosa","Q1","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Monitor N1","Jose Roberto Mineros Orellana","Q2","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Monitor N1","Karla Lissette Rosales Romero","Q1","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Monitor N1","Fredy Alexander Angulo Lopez","Q2","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Monitor N1","Abel Antonio Turcios Villalta","Q3","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Monitor N1","Hugo Aldair Campos Flores","Q2","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Monitor N1","Karen Beatriz Hernández De López","Q1","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Monitor N1","José Alexander Méndez Gutiérrez","Q2","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Monitor N1","Xavier Alejandro Martinez Molina","Q1","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Monitor N1","Valeria Alejandra Estrada Rodriguez","Q2","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Monitor N1","Guillermo Edgardo Chacon Ferman","Q1","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["AQ Analyst & Call Center","Bryan Gustavo Hurtado Salgado","–","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["AQ Analyst & Call Center","José Fernando Pérez Ramírez","–","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Analista de Datos","Marvin Giovanni Chavez Ortega","–","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Experto en Conectividad","Adrian Esau Gonzalez Vasquez","Q3","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Admin. de Contrato","Gerardo José Prado Ramírez","–","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+  ["Admin. de Contrato","Reyna Elizabeth Zavala de Villalta","–","9:20 a.m.","9:40 a.m.","3:20 p.m.","3:40 p.m."],
+  ["Admin. de Contrato","Fátima Helena Vásquez de Chávez","–","9:00 a.m.","9:20 a.m.","3:00 p.m.","3:20 p.m."],
+];
+
+function cargoClass(c) {
+  if (c.toLowerCase().includes('supervisor')) return 'cargo-sup';
+  if (c.toLowerCase().includes('monitor')) return 'cargo-mon';
+  if (c.toLowerCase().includes('tec')) return 'cargo-tec';
+  return 'cargo-other';
+}
+function equipoBadge(q) {
+  if (q==='Q1') return `<span class="badge q1">Q1</span>`;
+  if (q==='Q2') return `<span class="badge q2">Q2</span>`;
+  if (q==='Q3') return `<span class="badge q3">Q3</span>`;
+  return `<span class="badge q-none">–</span>`;
+}
+
+const tbody = document.getElementById('tbody');
+let q1=0,q2=0,q3=0,qn=0;
+data.forEach((row, i) => {
+  const [cargo,nombre,equipo,b1s,b1e,b2s,b2e] = row;
+  if(equipo==='Q1') q1++;
+  else if(equipo==='Q2') q2++;
+  else if(equipo==='Q3') q3++;
+  else qn++;
+  tbody.innerHTML += `<tr>
+    <td class="num">${i+1}</td>
+    <td class="left ${cargoClass(cargo)}">${cargo}</td>
+    <td class="left">${nombre}</td>
+    <td>${equipoBadge(equipo)}</td>
+    <td class="time-cell">${b1s}</td>
+    <td class="time-cell">${b1e}</td>
+    <td class="time-cell">${b2s}</td>
+    <td class="time-cell">${b2e}</td>
+    <td><strong>20 min</strong></td>
+  </tr>`;
+});
+
+const sumDiv = document.getElementById('summary');
+sumDiv.innerHTML = `
+  <span class="sum-label">&#128203; Resumen por Equipo</span>
+  <span class="sum-badge sum-q1">Q1: ${q1} personas</span>
+  <span class="sum-badge sum-q2">Q2: ${q2} personas</span>
+  <span class="sum-badge sum-q3">Q3: ${q3} personas</span>
+  <span class="sum-badge sum-none">–: ${qn} personas</span>
+  <span class="sum-badge sum-total">TOTAL: ${data.length} personas</span>
+`;
+</script>
+</body>
+</html>
