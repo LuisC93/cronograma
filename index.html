@@ -8,7 +8,7 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg,#e8eef7 0%,#f0f4f8 100%); padding: 20px; color:#1a3a6b; }
-  .container { background: #fff; max-width: 1150px; margin: 0 auto; padding: 24px; border-radius: 16px; box-shadow: 0 10px 40px rgba(26,58,107,.15); }
+  .container { background: #fff; max-width: 1400px; margin: 0 auto; padding: 24px; border-radius: 16px; box-shadow: 0 10px 40px rgba(26,58,107,.15); }
 
   /* HEADER */
   .topbar { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:18px; }
@@ -55,7 +55,9 @@
   tbody tr { transition:background .15s; }
   tbody tr:nth-child(even){ background:#f4f8ff; }
   tbody tr:hover { background:#ddeeff; }
-  tbody tr.break-now { background:#d5f5e3 !important; box-shadow:inset 4px 0 0 #27ae60; }
+  tbody tr.break-now { background:#d5f5e3 !important; box-shadow:inset 5px 0 0 #27ae60; animation:rowGlow 1.5s ease-in-out infinite; }
+  @keyframes rowGlow { 0%,100%{ background:#d5f5e3 !important; } 50%{ background:#b8ecc9 !important; } }
+  .now-tag { display:inline-block; margin-left:6px; padding:2px 8px; border-radius:20px; background:#27ae60; color:#fff; font-size:9px; font-weight:800; letter-spacing:.5px; vertical-align:middle; animation:pulse 1.2s infinite; }
   td { padding:8px; text-align:center; border:1px solid #e3ebf5; }
   td.left { text-align:left; }
   td.num { font-weight:700; color:#7f8fa4; }
@@ -346,7 +348,7 @@ function render(){
 
     html+='<tr class="'+(activeRow?'break-now':'')+'">'
       +'<td class="num">'+(i+1)+'</td>'
-      +'<td class="left">'+nombre+'</td>'
+      +'<td class="left">'+nombre+(activeRow?'<span class="now-tag">&#128994; EN DESCANSO</span>':'')+'</td>'
       +'<td>'+equipoBadge(equipo)+'</td>'
       +'<td><span class="time-pill '+(in1?'hot':'')+'">'+b1s+'</span></td>'
       +'<td><span class="time-pill '+(in1?'hot':'')+'">'+b1e+'</span></td>'
@@ -384,7 +386,13 @@ function updateStatus(){
   if(active){
     st.className='status active';
     const left=active.e-nowMin;
-    txt.innerHTML='&#9989; EN DESCANSO AHORA &mdash; '+active.label+' (termina en '+left+' min)';
+    // contar cuantas personas estan en descanso ahora
+    let enDescanso=0;
+    data.forEach(r=>{
+      const [,,,b1s,b1e,b2s,b2e]=r;
+      if((nowMin>=toMin(b1s)&&nowMin<toMin(b1e))||(nowMin>=toMin(b2s)&&nowMin<toMin(b2e))) enDescanso++;
+    });
+    txt.innerHTML='&#9989; EN DESCANSO AHORA &mdash; '+active.label+' &middot; <strong>'+enDescanso+' persona'+(enDescanso!==1?'s':'')+'</strong> (termina en '+left+' min)';
     return;
   }
   const next=blocks.find(b=>b.s>nowMin);
